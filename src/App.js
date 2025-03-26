@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
+  const [userId, setUserId] = useState('');
+  const [recommendations, setRecommendations] = useState([]);
+const getRecommendations = async () => {
+ try {
+ const response = await axios.get(`http://localhost:5000/recommend?user_id=${userId}`);
+ setRecommendations(response.data);
+ } catch (error) {
+ console.error("There was an error fetching the recommendations!", error);
+ }
+ };
+return (
+ <div className="App">
+ <h1>Movie Recommendation System</h1>
+ <input
+ type="number"
+ placeholder="Enter User ID"
+ value={userId}
+ onChange={(e) => setUserId(e.target.value)}
+ />
+ <button onClick={getRecommendations}>Get Recommendations</button>
+ <ul>
+ {recommendations.map((movie, index) => (
+ <li key={index}>{movie}</li>
+ ))}
+ </ul>
+ </div>
+ );
+ }
 export default App;
